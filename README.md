@@ -125,8 +125,7 @@ INSERT INTO Product VALUES (999,'Test',101,-10,5);
 
 ## 🔹 Tools Used
 - PostgreSQL  
-- pgAdmin / DBeaver  
-- SQL  
+  
 
 ---
 
