@@ -1,44 +1,30 @@
-🛒 Retail Inventory & Sales Management Database Project
-📌 Project Objective
+# 🛒 Retail Inventory & Sales Management Database
 
-This project designs and implements a PostgreSQL Retail Inventory & Sales Management Database to:
+Design and implementation of a **PostgreSQL Retail Inventory & Sales Management System** to manage categories, products, sales transactions, data integrity, and business reports.
 
-Manage product inventory
+---
 
-Maintain category information
+## 🔹 Features
+- 📦 Manage product inventory  
+- 🧾 Record sales transactions  
+- 🔐 Strong data integrity & validation  
+- 📊 Business analytics & reports  
+- 🧪 Real-world testing done  
 
-Record sales transactions
+---
 
-Ensure strong data integrity & validation
+## 🔹 Database Schema
 
-Generate insightful business reports for decision-making
-
-🏗️ Database Schema Overview
-
-The database consists of three core tables:
-
-📁 Categories Table
-
-Stores product category information.
-
-Column	Description
-Category_Id	Primary Key
-CategoryName	Category description
+### 📁 Categories
+```sql
 CREATE TABLE Categories(
   Category_Id INT PRIMARY KEY,
   CategoryName VARCHAR(50)
 );
+```
 
-📦 Product Table
-
-Maintains product inventory details.
-
-Column	Description
-Product_Id	Primary Key
-Product_Name	Product Name
-Category_Id	Foreign Key → Categories.Category_Id
-Unit_Price	Product Price
-Units_In_Stock	Available Stock
+### 📦 Product
+```sql
 CREATE TABLE Product(
   Product_Id INT PRIMARY KEY,
   Product_Name VARCHAR(55),
@@ -47,16 +33,10 @@ CREATE TABLE Product(
   Units_In_Stock INT,
   FOREIGN KEY (Category_Id) REFERENCES Categories(Category_Id)
 );
+```
 
-🧾 Sales Table
-
-Stores product sales transactions.
-
-Column	Description
-Sale_ID	Primary Key
-Product_Id	Foreign Key → Product.Product_Id
-Sale_Date	Date of Sale
-Quantity_Sold	Units Sold
+### 🧾 Sales
+```sql
 CREATE TABLE Sales(
   Sale_ID INT PRIMARY KEY,
   Product_Id INT,
@@ -64,26 +44,13 @@ CREATE TABLE Sales(
   Quantity_Sold INT,
   FOREIGN KEY (Product_Id) REFERENCES Product(Product_Id)
 );
+```
 
-🔐 Data Integrity Implementation
-✅ Foreign Key Constraints
+---
 
-Product.Category_Id → Categories.Category_Id
+## 🔹 Data Integrity & Validation
 
-Sales.Product_Id → Product.Product_Id
-
-✔️ Ensures no product exists without a valid category
-✔️ Prevents sales records for non-existing products
-
-✔️ Data Validation Rules
-Constraint	Purpose
-Unit price must be positive	Prevents negative pricing
-Units in stock must be non-negative	Prevents invalid inventory
-Quantity sold ≥ 0	Prevents invalid sales
-Foreign Key validation	Avoids orphan records
-
-Example Constraints:
-
+```sql
 ALTER TABLE Product
 ADD CONSTRAINT chk_unit_price_positive CHECK (Unit_Price > 0);
 
@@ -92,24 +59,29 @@ ADD CONSTRAINT chk_units_stock_non_negative CHECK (Units_In_Stock >= 0);
 
 ALTER TABLE Sales
 ADD CONSTRAINT chk_qty_positive CHECK (Quantity_Sold >= 0);
+```
 
-🧾 Sales Recording
+✔ Prevents negative prices  
+✔ Prevents invalid stock values  
+✔ Prevents negative quantity sold  
+✔ Ensures no orphan records  
 
-Multiple realistic sales transactions were inserted to simulate retail operations.
+---
 
-INSERT INTO Sales(Sale_ID, Product_Id, Sale_Date, Quantity_Sold)
-VALUES (1,1,'2024-01-01',3);
+## 🔹 Business Reports
 
-📊 Business Reports Generated
-📌 1️⃣ Total Sales by Product
+### 1️⃣ Total Sales by Product
+```sql
 SELECT p.Product_Id, p.Product_Name,
 SUM(s.Quantity_Sold * p.Unit_Price) AS Total_Sales
 FROM Product p
 JOIN Sales s ON p.Product_Id = s.Product_Id
 GROUP BY p.Product_Id, p.Product_Name
 ORDER BY Total_Sales DESC;
+```
 
-📌 2️⃣ Total Sales by Category
+### 2️⃣ Total Sales by Category
+```sql
 SELECT c.Category_Id, c.CategoryName,
 SUM(s.Quantity_Sold * p.Unit_Price) AS Total_Sales
 FROM Categories c
@@ -117,43 +89,51 @@ JOIN Product p ON c.Category_Id = p.Category_Id
 JOIN Sales s ON p.Product_Id = s.Product_Id
 GROUP BY c.Category_Id, c.CategoryName
 ORDER BY Total_Sales DESC;
+```
 
-📌 3️⃣ Current Inventory Status
+### 3️⃣ Current Inventory Status
+```sql
 SELECT Product_Id, Product_Name, Units_In_Stock
 FROM Product
 ORDER BY Units_In_Stock ASC;
+```
 
-📌 4️⃣ Out of Stock Products
+### 4️⃣ Out of Stock Products
+```sql
 SELECT Product_Id, Product_Name
 FROM Product
 WHERE Units_In_Stock = 0;
+```
 
-🧪 Testing & Validation
-✔️ Test Cases Executed
-Test	Result
-Insert negative price	❌ Rejected
-Insert invalid category	❌ Rejected
-Insert negative quantity	❌ Rejected
-Insert valid sale	✅ Accepted
+---
 
-Example Failing Test:
+## 🔹 Testing
 
+| Test Case | Result |
+|----------|--------|
+Insert negative price | ❌ Rejected
+Insert invalid category | ❌ Rejected
+Insert negative quantity | ❌ Rejected
+Insert valid sale | ✅ Accepted
+
+Example failing test:
+```sql
 INSERT INTO Product VALUES (999,'Test',101,-10,5);
+```
 
-✅ Conclusion
+---
 
-This project successfully:
+## 🔹 Tools Used
+- PostgreSQL  
+- pgAdmin / DBeaver  
+- SQL  
 
-✔️ Maintains structured retail data
-✔️ Ensures high data integrity
-✔️ Prevents invalid entries
-✔️ Supports inventory management
-✔️ Generates meaningful analytical reports
+---
 
-📎 Tools Used
-
-PostgreSQL
-
-pgAdmin / DBeaver
-
-SQL
+## ✅ Conclusion
+This project provides a **robust retail database system** that:
+✔ Maintains structured retail data  
+✔ Ensures strong data integrity  
+✔ Prevents invalid entries  
+✔ Supports inventory management  
+✔ Generates meaningful business insights  
